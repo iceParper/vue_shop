@@ -6,26 +6,105 @@
         <img src="../assets/logo.png" alt="" />
       </div>
       <!-- 登录表单区域 -->
-      <el-form label-width="0px" class="login_form">
-          <!-- 用户名 -->
-        <el-form-item >
-          <el-input prefix-icon="iconfont icon-user"></el-input>
+      <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginRules"
+        label-width="0px"
+        class="login_form"
+      >
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <el-input
+            v-model="loginForm.username"
+            prefix-icon="iconfont icon-user"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
-          <el-input prefix-icon="iconfont icon-3702mima"></el-input>
+        <el-form-item prop="password">
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            prefix-icon="iconfont icon-3702mima"
+          ></el-input>
         </el-form-item>
         <!-- 按钮 -->
-        <el-form-item class="btns">
-          <el-button type="primary">登录</el-button>
-          <el-button type="info">重置</el-button>
+        <el-form-item class="btns" prop="">
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data: function () {
+    return {
+      //表单数据绑定
+      loginForm: {
+        username: 'admin',
+        password: '123456',
+      },
+      loginRules: {
+        //表单验证规则
+        username: [
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur',
+          },
+          {
+            min: 5,
+            max: 16,
+            message: '输入长度需要在5-16个字符之间',
+            trigger: 'blur',
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur',
+          },
+          {
+            min: 5,
+            max: 16,
+            message: '输入长度需要在5-16个字符之间',
+            trigger: 'blur',
+          },
+        ],
+      },
+    }
+  },
+  methods: {
+    //重置表单内容
+    reset: function () {
+      this.$refs.loginFormRef.resetFields()
+    },
+    login: function () {
+      //根据表单验证规则进行表单预验证
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return
+        //获取登录后服务器响应回来的数据
+        let { data: res } = await this.$http.post('login', this.loginForm)
+        console.log(res)
+        if (res.meta.status !== 200)
+          return this.$message.error('密码错误,请重新输入')
+        //使用Vue实例里prototype中的属性$message，里面提前搭载了message组件
+        this.$message({
+          message: '登录成功',
+          type: 'success',
+        })
+        //在登录成功以后，应该吧token保存到sessionstorage中去
+        //token只在网页打开期间生效，除了登录之外的API接口必须在登录之后才能使用
+        window.sessionStorage.setItem('token', res.data.token)
+        //登录成功以后，向home界面跳转
+        this.$router.push('/home')
+      })
+    },
+  },
+}
 </script>
 <style lang="less" scoped>
 .login_container {
