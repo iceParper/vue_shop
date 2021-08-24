@@ -74,7 +74,7 @@ export default {
             trigger: 'blur',
           },
         ],
-      },
+      }
     }
   },
   methods: {
@@ -88,7 +88,7 @@ export default {
         if (!valid) return
         //获取登录后服务器响应回来的数据
         let { data: res } = await this.$http.post('login', this.loginForm)
-        console.log(res)
+        // console.log(res)
         if (res.meta.status !== 200)
           return this.$message.error('密码错误,请重新输入')
         //使用Vue实例里prototype中的属性$message，里面提前搭载了message组件
