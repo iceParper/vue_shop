@@ -43,9 +43,8 @@
             <!-- 文字提示 -->
             <el-tooltip  effect="dark" content="分配角色" placement="top-start" :enterable="false">
                 <!-- 分配角色按钮 -->
-                <el-button type="info" icon="el-icon-setting" size="mini"></el-button>
+                <el-button type="info" icon="el-icon-setting" size="mini" @click="showAllotDialog(scope.row)"></el-button>
             </el-tooltip>
-            
             </template>
         </el-table-column>
       </el-table>
@@ -95,6 +94,21 @@
             <el-button type="primary" @click="editUser">确 定</el-button>
           </span>
         </el-dialog>
+        <!-- 分配用户角色对话框 -->
+        <el-dialog title="角色分配" :visible.sync="allotDialogVisible" width="30%" @close="allotDialogClosed">
+          <div>
+            <p>当前的用户：{{uInfo.username}}</p>
+            <p>当前的角色：{{uInfo.role_name}}</p>
+          </div>
+          <el-select v-model="value" placeholder="请选择">
+            <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id">
+            </el-option>
+          </el-select>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="allotDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="setRole">确 定</el-button>
+          </span>
+        </el-dialog>
     </el-card>
   </div>
 </template>
@@ -131,6 +145,8 @@ export default {
       addDialogVisible:false, 
       //控制修改用户对话框的展示与隐藏
       editDialogVisible:false, 
+      //控制分配用户角色对话框的展示与隐藏
+      allotDialogVisible:false,
       //添加用户表单数据
       addForm:{
           username:'',
@@ -144,7 +160,8 @@ export default {
            username:'',
            email:'',
            mobile:''
-      },
+      }, 
+      
       //添加用户表单校验规则
         rules:{
             username:[
@@ -164,7 +181,13 @@ export default {
                 {validator:checkMobile,trigger: 'blur'}
 
             ]
-        } 
+        } ,
+        //即将分配角色的用户信息
+        uInfo:{},
+        //角色列表的所有数据
+        rolesList:[],
+        //选中的角色ID
+        value:''
     }
   },
   created: function () {
@@ -280,6 +303,35 @@ export default {
             this.$message.info('取消删除')
         }
        
+    },
+    //弹出分配角色对话框
+    showAllotDialog:async function(userInfo){
+      this.uInfo = userInfo
+      //获取角色列表数据
+      var {data:res} = await this.$http.get('roles')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      //讲获取数据赋给本地data中的rightsList
+      this.rolesList = res.data
+      console.log(this.rolesList);
+      this.allotDialogVisible = true
+    },
+    //设置角色
+    setRole:async function(){
+      //修改用户角色
+     var {data:res} =await this.$http.put(`users/${this.uInfo.id}/role`,{rid:this.value})
+     if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+     //刷新列表
+     this.getUesrsList()
+     //关闭对话框
+     this.allotDialogVisible= false
+     console.log(res);
+    },
+    //监听分配角色对话框关闭事件
+    allotDialogClosed:function(){
+      //清空下拉列表框选中的选项
+      this.value = ''
+      //清空点击分配角色按钮，所获的当前的用户信息
+      this.uInfo = {}
     }
   },
 }
