@@ -273,7 +273,7 @@ export default {
         this.$refs.editFormRef.validate(async valid =>{    
         if (!valid) return
         //利用id，按照data中editForm里的数据修改用户信息
-        var {data:res} = await this.$http.put(`users/${this.editForm.id}`,this.editForm)
+        var {data:res} = await this.$http.put(`users/${this.editForm.id}`,{cat_name:this.editForm.cat_name})
         //提示是否修改成功
         if (res.meta.status !==200) return this.$message.error(res.meta.msg)
         this.$message.success(res.meta.msg)

@@ -28,7 +28,11 @@ import {
     Tag,
     Tree,
     Select,
-    Option
+    Option,
+    Cascader,
+    Alert,
+    Tabs,
+    TabPane
 } from 'element-ui'
 //把message组件挂载到Vue的原型对象上去
 Vue.prototype.$message = Message
@@ -61,3 +65,7 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
+Vue.use(Alert)
+Vue.use(Tabs)
+Vue.use(TabPane)

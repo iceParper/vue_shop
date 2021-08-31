@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router/router.js'
 import axios from 'axios'
+import treeTable from 'vue-table-with-tree-grid'
 //将axios定义到Vue的prototype中去，这样全局就可以使用axios进行数据请求
 Vue.prototype.$http = axios
     //添加API的默认地址
@@ -20,6 +21,8 @@ import './plugins/element.js'
 import './assets/fonts/iconfont.css'
 //导入全局样式
 import './assets/css/global.css'
+//全局注册Tree-grid组件
+Vue.component('tree-table', treeTable)
 Vue.config.productionTip = false
 new Vue({
     router,
