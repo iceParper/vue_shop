@@ -32,7 +32,14 @@ import {
     Cascader,
     Alert,
     Tabs,
-    TabPane
+    TabPane,
+    Steps,
+    Step,
+    Checkbox,
+    CheckboxGroup,
+    Upload,
+    Timeline,
+    TimelineItem
 } from 'element-ui'
 //把message组件挂载到Vue的原型对象上去
 Vue.prototype.$message = Message
@@ -69,3 +76,12 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Steps)
+Vue.use(Step)
+Vue.use(TabPane)
+Vue.use(Tabs)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
+Vue.use(Upload)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
